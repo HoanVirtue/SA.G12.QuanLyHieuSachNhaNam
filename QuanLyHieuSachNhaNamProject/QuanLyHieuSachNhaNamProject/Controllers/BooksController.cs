@@ -33,7 +33,11 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                if (await IsExistBookId(book.SMasach))
+                {
+                    _notyfService.Error("Mã sách đã tồn tại");
+                    return View(book);
+                }
 
                 var createRs = await _sachService.AddSach(book);
                 if (createRs != null)
@@ -96,6 +100,11 @@ namespace Web.Controllers
                 _notyfService.Error("Đã có lỗi xảy ra!");
             }
             return RedirectToAction("Index", "Books");
+        }
+
+        private async Task<bool> IsExistBookId(string bookId)
+        {
+            return await _sachService.GetSachs(bookId) != null;
         }
     }
 }
