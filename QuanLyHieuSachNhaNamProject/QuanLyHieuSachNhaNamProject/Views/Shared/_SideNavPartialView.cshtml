@@ -1,0 +1,52 @@
+﻿<div class="side-nav">
+    <div class="side-nav-inner">
+        <ul class="side-nav-menu scrollable">
+            
+            <li class="nav-item">
+                <a asp-action="Index" asp-controller="Home">
+                    <span class="icon-holder">
+                        <i class="anticon anticon-dashboard"></i>
+                    </span>
+                    <span class="title">Trang chủ</span>
+                    <span class="arrow">
+                        <i class="arrow-icon"></i>
+                    </span>
+                </a>
+            </li>
+            <hr style="height:2px;border-width:0;color:gray;background-color:gray;margin:0 10px 0 0">
+            <li class="nav-item">
+                <a asp-controller="Books" asp-action="Index">
+                    <span class="icon-holder">
+                        <i class="fa-solid fa-rectangle-list"></i>
+                    </span>
+                    <span class="title">Quản lý sách</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a asp-controller="Lessons" asp-action="Index">
+                    <span class="icon-holder">
+                        <i class="fa-solid fa-money-bill"></i>
+                    </span>
+                    <span class="title">Quản lý khách hàng</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a asp-controller="Questions" asp-action="Index">
+                    <span class="icon-holder">
+                        <i class="fa-solid fa-laptop"></i>
+                    </span>
+                    <span class="title">Quản lý ....</span>
+                </a>
+            </li>
+            <hr />
+            <li class="nav-item">
+                <a asp-controller="Users" asp-action="Index">
+                    <span class="icon-holder">
+                       <i class="fa-solid fa-user-check"></i>
+                    </span>
+                    <span class="title">Quản lý người dùng</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

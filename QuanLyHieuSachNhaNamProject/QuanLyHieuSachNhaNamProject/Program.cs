@@ -1,5 +1,8 @@
 using Application.MappingSetup;
+using Application.Services;
+using AspNetCoreHero.ToastNotification;
 using Infrastructure;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<QuanLyHieuSachNhaNamContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"))
+    .EnableSensitiveDataLogging());
 
 builder.Services.AddDomainMappings();
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 7; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
+
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ISachRepository, SachRepository>();
+
+builder.Services.AddScoped<ISachService, SachService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

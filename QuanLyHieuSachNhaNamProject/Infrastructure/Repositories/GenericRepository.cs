@@ -43,11 +43,6 @@ namespace Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public GenericRepository(QuanLyHieuSachNhaNamContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
-
         // Get all with filter, order by, include properties or not
         public async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>> filter = null,
@@ -82,48 +77,68 @@ namespace Infrastructure.Repositories
             int? pageIndex = null,
             int? pageSize = null)
         {
-            IQueryable<T> query = _dbSet;
-
-            if (filter != null)
+            try
             {
-                query = query.Where(filter);
+                IQueryable<T> query = _dbSet;
+
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                foreach (var includeProperty in includeProperties.Split
+                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+
+                if (orderBy != null)
+                {
+                    query = orderBy(query);
+                }
+                int? totalItemsCount = 0;
+                try
+                {
+                    totalItemsCount = await query.CountAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                    }
+                }
+                //int? totalItemsCount = await query.CountAsync();
+
+                if (pageIndex.HasValue && pageIndex.Value == -1)
+                {
+                    pageSize = totalItemsCount; // Set pageSize to total count
+                    pageIndex = 0; // Reset pageIndex to 0
+                }
+                else if (pageIndex.HasValue && pageSize.HasValue)
+                {
+                    int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value : 0;
+                    int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10; // Assuming a default pageSize of 10 if an invalid value is passed
+
+                    query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
+                }
+
+                var items = await query.ToListAsync();
+
+                return new Pagination<T>
+                {
+                    TotalItemsCount = totalItemsCount ?? 0,
+                    PageSize = pageSize ?? totalItemsCount ?? 0,
+                    PageIndex = pageIndex ?? 0,
+                    Items = items
+                };
             }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            catch (Exception ex)
             {
-                query = query.Include(includeProperty);
+                Console.WriteLine(ex.Message);
             }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            var totalItemsCount = await query.CountAsync();
-
-            if (pageIndex.HasValue && pageIndex.Value == -1)
-            {
-                pageSize = totalItemsCount; // Set pageSize to total count
-                pageIndex = 0; // Reset pageIndex to 0
-            }
-            else if (pageIndex.HasValue && pageSize.HasValue)
-            {
-                int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value : 0;
-                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10; // Assuming a default pageSize of 10 if an invalid value is passed
-
-                query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
-            }
-
-            var items = await query.ToListAsync();
-
-            return new Pagination<T>
-            {
-                TotalItemsCount = totalItemsCount,
-                PageSize = pageSize ?? totalItemsCount,
-                PageIndex = pageIndex ?? 0,
-                Items = items
-            };
+            return null;
         }
 
         public async Task<T?> GetByIdAsync(object id)
@@ -189,8 +204,9 @@ namespace Infrastructure.Repositories
         // Delete entity by Id
         public async Task DeleteAsync(object id)
         {
-            T entityToDelete = _dbSet.Find(id);
-            await Delete(entityToDelete);
+            T entityToDelete = _dbSet.Find((string)id);
+            if (entityToDelete != null)
+                await Delete(entityToDelete);
         }
 
         // Delete entity

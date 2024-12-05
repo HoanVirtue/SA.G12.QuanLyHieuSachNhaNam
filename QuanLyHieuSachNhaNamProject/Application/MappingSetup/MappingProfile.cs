@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Dto;
 using Domain.Models;
+using Domain.ModelViews;
 
 namespace Application.MappingSetup
 {
@@ -9,7 +10,10 @@ namespace Application.MappingSetup
         public MappingProfile()
         {
             CreateMap<CUSachDto, TblSach>();
+            CreateMap<SachItem, CUSachDto>();
             CreateMap<TblSach, SachItem>();
+
+            CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }
     }
 }

@@ -1,0 +1,80 @@
+﻿@using Domain.Dto
+@model CUSachDto
+
+@{
+    ViewData["Title"] = "Thêm mới sách";
+}
+
+<div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content my-2">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="page-header">
+                <div class="header-sub-title">
+                    <nav class="breadcrumb breadcrumb-dash">
+                        <a asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+                        <a asp-controller="Books" asp-action="Index" class="breadcrumb-item">Danh sách Sách</a>
+                        <span class="breadcrumb-item active">Thêm mới</span>
+
+                    </nav>
+                </div>
+            </div>
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class=" col-md-6">
+                        </div>
+                        <div class=" col-md-6 text-right">
+                            <a class="btn btn-success fas fa-undo-alt" asp-action="Index"></a>
+                            <button class="btn btn-primary" type="submit"><i class="fas fas fa-save mr-1"></i>Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+ 
+                        <div class="form-group col-md-6">
+                            <label asp-for="SMasach">Mã sách</label>
+                            <input type="text" asp-for="SMasach" class="form-control" />
+                            <span asp-validation-for="SMasach" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="STensach">Tên sách</label>
+                            <input type="text" asp-for="STensach" class="form-control" />
+                            <span asp-validation-for="STensach" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="STenTg">Tác giả</label>
+                            <input asp-for="STenTg" class="form-control" />
+                            <span asp-validation-for="STenTg" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="IDongia">Đơn giá</label>
+                            <input type="number" asp-for="IDongia" class="form-control" />
+                            <span asp-validation-for="IDongia" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="ISoluong">Số lượng</label>
+                            <input type="number" asp-for="ISoluong" class="form-control" />
+                            <span asp-validation-for="ISoluong" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="SNxb">NXB</label>
+                            <input type="text" asp-for="SNxb" class="form-control" />
+                            <span asp-validation-for="SNxb" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="STheloai">Thể loại</label>
+                            <input type="text" asp-for="STheloai" class="form-control" />
+                            <span asp-validation-for="STheloai" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </form>
+    </section>
+    <!-- /.content -->
+</div>

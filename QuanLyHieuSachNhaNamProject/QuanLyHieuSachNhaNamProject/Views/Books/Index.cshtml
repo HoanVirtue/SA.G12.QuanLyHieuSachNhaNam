@@ -1,0 +1,110 @@
+﻿@using Domain.Dto
+@using Domain.ModelViews
+@using System.Globalization
+@model Pagination<SachItem>
+@{
+    string FormatCurrency(double money)
+    {
+        CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+        string a = double.Parse("12345").ToString("#,###", cul.NumberFormat);
+        return a;
+    }
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <span class="breadcrumb-item active">Quản lý sách</span>
+        </nav>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-10">
+                        <form asp-action="Index" asp-controller="Books" method="get">
+                            <div class="input-affix m-v-10">
+                                <i class="prefix-icon anticon anticon-search opacity-04"></i>
+                                <input id="keyword" name="keySearch" value="@ViewBag.SearchKey" type="text" class="form-control" placeholder="Tìm kiếm...">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-right m-v-10">
+                <a class="btn btn-primary" asp-controller="Books" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thêm mới</span></a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover e-commerce-table">
+                <thead>
+                    <tr>
+                        <th class="text-center">Mã sách</th>
+                        <th class="text-center">Sách</th>
+                        <th class="text-center">Tác giả</th>
+                        <th class="text-center">Đơn giá</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-center">Nhà xuất bản</th>
+                        <th class="text-center">Thể loại</th>
+                        <th scope="col" class="text-center" style="width:300px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="records_table">
+                    @if (Model.Items != null)
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td scope="row" class="text-center"><p>@item.SMasach</p></td>
+                                <td scope="row" class="text-center">
+                                    <p>@item.STensach</p>
+                                </td>
+                                <td scope="row">
+                                    <p>@item.STenTg</p>
+                                </td>
+                                <td scope="row" class="text-center"><p>@FormatCurrency(item.IDongia)</p></td>
+                                <td scope="row" class="text-center"><p>@item.ISoluong</p></td>
+                                <td scope="row" class="text-center"><p>@item.SNxb</p></td>
+                                <td scope="row" class="text-center"><p>@item.STheloai</p></td>
+                                <td class="text-center" style="width:300px;">
+                                    <a class="btn btn-secondary btn-tone m-r-5 fas fa-edit" asp-controller="Books" asp-action="Edit" asp-route-id="@item.SMasach"></a>
+                                    <button class="btn btn-danger btn-tone m-r-5 far fa-trash-alt" type="button" data-toggle="modal" data-target="#exampleModal-@item.SMasach"></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <div class="modal fade" id="exampleModal-@item.SMasach" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <form asp-action="Delete" asp-controller="Books" method="post">
+                                            <input type="hidden" name="id" value="@item.SMasach" />
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Bạn có chắc chắn muốn xóa dữ liệu này không?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
